@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.nattyantv.dismc_plugin</groupId>
+    <artifactId>dismc-plugin</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>dv8tion</id>
+            <name>m2-dv8tion</name>
+            <url>https://m2.dv8tion.net/releases</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>5.0.0-beta.6</version>
+        </dependency>
+        <dependency>
+            <groupId>club.minnced</groupId>
+            <artifactId>discord-webhooks</artifactId>
+            <version>0.8.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>com.nattyantv.dismc_plugin.Main</mainClass> <!-- You have to replace this with a path to your main class like my.path.Main -->
+                        </transformer>
+                    </transformers>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
