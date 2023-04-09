@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -29,6 +30,7 @@ import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 public class Main extends JavaPlugin implements Listener {
     public Long channelID;
     public String webhookurl;
+    public JDA bot;
 
     TextChannel channel;
     WebhookClient client;
@@ -44,6 +46,10 @@ public class Main extends JavaPlugin implements Listener {
         config.set("token", "Your Discord Bot Token");
         config.set("channel", "Your Discord Channel ID");
         saveConfig();
+    }
+
+    public String convText(Component comp) {
+        return PlainTextComponentSerializer.plainText().serialize(comp);
     }
 
     @Override
@@ -66,7 +72,7 @@ public class Main extends JavaPlugin implements Listener {
                 return;
             }
 
-            JDA bot = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
+            bot = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
                 .setRawEventsEnabled(true)
                 .setActivity(Activity.competing("Minecraft Server"))
                 .addEventListeners(new ListenerAdapter() {
@@ -128,8 +134,9 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getLogger().info("DisMC Plugin has been disabled!");
         channel.sendMessage(mesSTOP + "プラグインが正常に停止しました。").queue();
+        getLogger().info("DisMC Plugin has been disabled!");
+        bot.shutdownNow();
     }
 
     @EventHandler
@@ -152,10 +159,9 @@ public class Main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        String author = e.getPlayer().getName();
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(mesDEATH + "プレイヤーが死亡しました...");
-        eb.setDescription(PlainTextComponentSerializer.plainText().serialize(e.deathMessage()));
+        eb.setDescription(convText(e.deathMessage()));
         channel.sendMessageEmbeds(eb.build()).queue();
     }
 
